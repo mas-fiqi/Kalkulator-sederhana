@@ -1,117 +1,125 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import React, {Component} from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
   View,
+  StatusBar,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      hasil: '',
+      hitung: '',
+    };
+  }
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  masukanAngka = value => {
+    this.setState({hitung: this.state.hitung + value});
   };
 
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+  hitungHasil = () => {
+    try {
+      const hasil = eval(this.state.hitung);
+      this.setState({hitung: String(hasil)});
+    } catch (e) {
+      this.setState({hitung: 'Error'});
+    }
+  };
+
+  clearInput = () => {
+    this.setState({hitung: ''});
+  };
+
+  deleteLast = () => {
+    this.setState({hitung: this.state.hitung.slice(0, -1)});
+  };
+
+  renderButton = (label, onPress, flex = 1) => (
+    <TouchableOpacity style={[styles.button, {flex}]} onPress={onPress}>
+      <Text style={styles.buttonText}>{label}</Text>
+    </TouchableOpacity>
   );
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <StatusBar backgroundColor="#000814" barStyle="light-content" />
+
+        <View style={styles.display}>
+          <Text style={styles.displayText}>{this.state.hitung}</Text>
+        </View>
+
+        <View style={styles.buttonRow}>
+          {this.renderButton('7', () => this.masukanAngka('7'))}
+          {this.renderButton('8', () => this.masukanAngka('8'))}
+          {this.renderButton('9', () => this.masukanAngka('9'))}
+          {this.renderButton('/', () => this.masukanAngka('/'))}
+        </View>
+        <View style={styles.buttonRow}>
+          {this.renderButton('4', () => this.masukanAngka('4'))}
+          {this.renderButton('5', () => this.masukanAngka('5'))}
+          {this.renderButton('6', () => this.masukanAngka('6'))}
+          {this.renderButton('*', () => this.masukanAngka('*'))}
+        </View>
+        <View style={styles.buttonRow}>
+          {this.renderButton('1', () => this.masukanAngka('1'))}
+          {this.renderButton('2', () => this.masukanAngka('2'))}
+          {this.renderButton('3', () => this.masukanAngka('3'))}
+          {this.renderButton('-', () => this.masukanAngka('-'))}
+        </View>
+        <View style={styles.buttonRow}>
+          {this.renderButton('.', () => this.masukanAngka('.'))}
+          {this.renderButton('0', () => this.masukanAngka('0'))}
+          {this.renderButton('00', () => this.masukanAngka('00'))}
+          {this.renderButton('+', () => this.masukanAngka('+'))}
+        </View>
+        <View style={styles.buttonRow}>
+          {this.renderButton('C', this.clearInput)}
+          {this.renderButton('DEL', this.deleteLast)}
+          {this.renderButton('=', this.hitungHasil, 2)}
+        </View>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
+    backgroundColor: '#fefaf6',
+    justifyContent: 'center',
   },
-  sectionTitle: {
+  display: {
+    flex: 0.9,
+    backgroundColor: '#eadbc8',
+    margin: 10,
+    padding: 20,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
+  displayText: {
+    color: '#102c57',
+    fontSize: 70,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    marginVertical: 5,
+  },
+  button: {
+    justifyContent: 'center',
+    padding: 20,
+    backgroundColor: '#dac0a3',
+    margin: 5,
+    borderRadius: 10,
+  },
+  buttonText: {
+    color: '#102c57',
     fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+    textAlign: 'center',
   },
 });
 
